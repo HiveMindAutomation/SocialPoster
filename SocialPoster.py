@@ -49,7 +49,6 @@ def getLatestVideo(ytApiKey, chanID):
 
     youtube = build('youtube', 'v3', developerKey=ytApiKey)
 
-    #### DEBUGGING ####
     ## List channel Content ##
     request = youtube.channels().list(
         part='contentDetails',
@@ -58,7 +57,7 @@ def getLatestVideo(ytApiKey, chanID):
     ## Execute Request
     response = request.execute()
 
-    ## Find playlist of all uploads and print the Playlist ID
+    ## Find playlist of all uploads
     uploadsPlaylist = response['items'][0]['contentDetails']['relatedPlaylists']['uploads']
     # print(uploadsPlaylist)
 
@@ -73,6 +72,11 @@ def getLatestVideo(ytApiKey, chanID):
     )
     # Execute API Command and get response
     playlistResponse = playlist.execute()
+
+    ## Output response to query into a JSON file.
+    # with open('playlistDetails.json', 'w') as outfile:
+    #     json.dump(playlistResponse, outfile)
+    
     # Break Response out into Video ID of latest video 
     # Variable - videonumber - defined at top of script comes into play here.
     videoID = playlistResponse['items'][videoNumber]['contentDetails']['videoId']
@@ -82,7 +86,11 @@ def getLatestVideo(ytApiKey, chanID):
         id=videoID
         )
     videoResponse = video.execute()
-    # Gest Video Title from Response.
+    ## Output response to query into a JSON file.
+    # with open('videoDetails.json', 'w') as outfile:
+    #     json.dump(videoResponse, outfile)
+
+    # Get Video Title from Response.
     videoTitle = videoResponse['items'][0]['snippet']['localized']['title']
     # Generate URL from URLPrefix and videoID
     videoLink = f'{URLPrefix}{videoID}'

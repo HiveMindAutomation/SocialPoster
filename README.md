@@ -2,7 +2,7 @@
 
 ## Concept
 
-This Script utilises the YouTube API to retrieve the details of the most recently uploaded video including the VideoID, Title and thumbnail.
+This Script utilizes the YouTube API to retrieve the details of the most recently uploaded video including the VideoID, Title and thumbnail.
 The script then generates a Social Media Post for Twitter, Instagram and Facebook, and uses the relevant API's to post them.
 
 ## Preparation
@@ -28,8 +28,6 @@ You'll also need a mySQL Database with a Table called "videos" with the followin
 |link|VARCHAR|1024|utf8-bin|NO
 |thumbnail|longblob| | |NO
 
-
-
 ___
 
 ## Requirements
@@ -50,13 +48,16 @@ Alternatively, run `install -r requirements.txt` however this is likely to insta
 ## Usage
 
 ### To run fully automated
+
 In my environment, I have a cron job in my crontab that looks like this:  
 `*/15 * * * * cd /Users/stuart/Nextcloud/Dev/YoutubeAPI/ && ./SocialPoster.sh >> /Users/stuart/Nextcloud/Logs/SocialPoster.log 2>&1`  
 Which runs the Shell Script `SocialPoster.sh` every 15 minutes.  
 If you're setting up the same system, you'll need to modify the paths in the Shell script and in the CRON job.  
 I know using the crontab is wrong, I'll fix it later.  
 ___
+
 ### To run independently
+
 To run the script independently of any crontab etc, ensure the requirements are installed and run:  
 `python3 ./SocialPoster.py` from the folder the script is in.  
 the output will only show the "WGET" progress.

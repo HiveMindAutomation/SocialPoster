@@ -3,3 +3,4 @@ authkeys.py
 __pycache__
 src/
 socialposter.log
+*.json

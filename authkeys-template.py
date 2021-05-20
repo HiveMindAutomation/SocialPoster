@@ -1,4 +1,4 @@
-########### Authorisation Keys Template #######
+########### Authorization Keys Template #######
 # Fill out the variables and save this file to authkeys.py
 
 ## YouTube API Key - 
