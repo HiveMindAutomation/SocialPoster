@@ -1,0 +1,5 @@
+authkeys.py
+.vscode
+__pycache__
+src/
+socialposter.log
