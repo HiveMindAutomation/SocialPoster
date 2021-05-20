@@ -42,7 +42,7 @@ mydb = mysql.connector.connect(
 #################################   FUNCTION DEFINITIONS   ##################################################
 
 ### Get Video Title ###
-def getLatestVideo(ytApiKey, chanID, playID):
+def getLatestVideo(ytApiKey, chanID):
 
     
     URLPrefix = "https://youtube.com/watch?v="
@@ -51,15 +51,15 @@ def getLatestVideo(ytApiKey, chanID, playID):
 
     #### DEBUGGING ####
     ## List channel Content ##
-    # request = youtube.channels().list(
-    #     part='contentDetails',
-    #     id=chanID
-    # )
+    request = youtube.channels().list(
+        part='contentDetails',
+        id=chanID
+    )
     ## Execute Request
-    # response = request.execute()
+    response = request.execute()
 
     ## Find playlist of all uploads and print the Playlist ID
-    # uploadsPlaylist = response['items'][0]['contentDetails']['relatedPlaylists']['uploads']
+    uploadsPlaylist = response['items'][0]['contentDetails']['relatedPlaylists']['uploads']
     # print(uploadsPlaylist)
 
     ## Output response to query into a JSON file.
@@ -69,7 +69,7 @@ def getLatestVideo(ytApiKey, chanID, playID):
     # Use PlayID to define playlist we want the latest video for.
     playlist = youtube.playlistItems().list(
         part="contentDetails",
-        playlistId=playID
+        playlistId=uploadsPlaylist
     )
     # Execute API Command and get response
     playlistResponse = playlist.execute()
@@ -200,7 +200,7 @@ def logToSQL(video_id, video_title, videoLink, thumbnail):
 #############################################################################################################
 
 ### Call VideoTitle Function ###
-post = getLatestVideo(authkeys.youTube_key,authkeys.channelID,authkeys.playlistIdentifier)
+post = getLatestVideo(authkeys.youTube_key,authkeys.channelID)
 
 ### Call Thumbnail Function ###
 videoThumbnail = getThumb(authkeys.youTube_key,post[3])
