@@ -122,7 +122,7 @@ def getThumb(ytApiKey, videoID):
     # Execute API Lookup
     videoResponse = video.execute()
     #Get Video Thumbnail URL
-    videoThumb = videoResponse['items'][0]['snippet']['thumbnails']['maxres']['url']
+    videoThumb = videoResponse['items'][0]['snippet']['thumbnails']['high']['url']
 
     # print(videoThumb)
     # Get Video Title
@@ -148,12 +148,10 @@ def post_to_twitter(postText, video_title):
     auth.set_access_token(authkeys.access_token, authkeys.access_token_secret)
     # Aunthenticate to tweepy
     api = tweepy.API(auth)
-    # Define post text
-    tweet_text = postText
     ## Post to Twitter
     logging.info('Posting to Twitter')
     # Post to Twitter
-    api.update_with_media(f'{video_title}.jpg', tweet_text)
+    api.update_with_media(f'{video_title}.jpg', postText)
 
 ### Post to Instagram ###
 def instagram_post(video_title, videoLink):
@@ -205,7 +203,7 @@ def logToSQL(video_id, video_title, videoLink, thumbnail):
     
         
 
-#############################################################################################################
+######################################## MAIN SCRIPT BODY ####################################################
 
 ### Call VideoTitle Function ###
 post = getLatestVideo(authkeys.youTube_key,authkeys.channelID)
