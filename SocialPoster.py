@@ -6,8 +6,8 @@ import ssl
 import facebook
 from googleapiclient.discovery import build
 from instabot import Bot
-import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
+# import matplotlib.image as mpimg
+# import matplotlib.pyplot as plt
 import mysql.connector
 import tweepy
 import wget
@@ -132,11 +132,11 @@ def getThumb(ytApiKey, videoID):
     # Download thumbnail file
     thumbnail = wget.download(videoThumb, out=f'{videoTitle}.jpg')
 
-    img = mpimg.imread(thumbnail)
+    # img = mpimg.imread(thumbnail)
     # imgplot = plt.imshow(img)
     # plt.show()
 
-    return img
+    return thumbnail
 
 
 ### Post to Twitter ###
@@ -183,7 +183,7 @@ def logToSQL(video_id, video_title, videoLink, thumbnail):
     # Open Thumbnail file
     thumbfile = open(f'{video_title}.jpg', 'rb').read()
 
-    sql = "INSERT INTO videos (video_id, VideoTitle, link, thumbnail) VALUES (%s, %s, %s, %s)"
+    sql = "INSERT INTO videos (video_id, video_title, link, thumbnail) VALUES (%s, %s, %s, %s)"
     val = (video_id, video_title, videoLink, thumbfile)
     
     try:
@@ -212,6 +212,8 @@ post = getLatestVideo(authkeys.youTube_key,authkeys.channelID)
 videoThumbnail = getThumb(authkeys.youTube_key,post[3])
 
 posting = logToSQL(post[3], post[1], post[2], videoThumbnail)
+
+# posting = True
 
 if posting == True:
     ### Call Twitter Post function ###
