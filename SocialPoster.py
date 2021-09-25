@@ -6,8 +6,8 @@ import ssl
 import facebook
 from googleapiclient.discovery import build
 from instabot import Bot
-# import matplotlib.image as mpimg
-# import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
 import mysql.connector
 import tweepy
 import wget
@@ -20,7 +20,9 @@ import authkeys
 ssl._create_default_https_context = ssl._create_unverified_context
 
 # Instantiate Logging
+# TODO - Enable Logging to log server
 logging.basicConfig(filename='SocialPoster.log',format='%(asctime)s %(levelname)-8s %(message)s',encoding='utf-8',level=logging.INFO,datefmt='%Y-%m-%d %H:%M:%S')
+# Log Beginning of Script Run - Adding this helps when reading logs.
 logging.info('-----------------------------------   STARTING SOCIAL MEDIA POSTER    --------------------------------')
 
 ##############################################   VARIABLES   ################################################
@@ -31,7 +33,6 @@ sqlHost = "192.168.1.20"
 sqlDatabase = "YouTube"
 
 #################################   Connect to MySQL       ##################################################
-
 mydb = mysql.connector.connect(
   host=sqlHost,
   user=authkeys.sqlUser,
@@ -110,6 +111,8 @@ def getLatestVideo(ytApiKey, chanID):
     return postContent, videoTitle, videoLink, videoID
 
 ### Get Video Thumbnail ###
+## TODO - put Thumbnail gather into latest video function
+## TODO - Probably should use Pillow instead of MatPlotLib
 def getThumb(ytApiKey, videoID):
 
     # Instantiate YouTube API
@@ -138,7 +141,6 @@ def getThumb(ytApiKey, videoID):
 
     return thumbnail
 
-
 ### Post to Twitter ###
 def post_to_twitter(postText, video_title):
     # Log Details
@@ -159,6 +161,7 @@ def instagram_post(video_title, videoLink):
     bot = Bot()
     # Login to Instagram
     logging.info('Logging into Instagram')
+    ## TODO - Put inside Try Block
     bot.login(username = authkeys.instagramUsername, password = authkeys.instagramPassword)
     logging.info('Login Successful')
     # create caption
@@ -176,7 +179,8 @@ def facebook_post(post_Text, videoLink):
     logging.info('Posting to FaceBook')
     fb.put_object(parent_object="me", connection_name="feed", message=post_Text, link=videoLink)
 
-# Log to mySQL Database - This is OVERKILL
+# Log to mySQL Database
+## TODO - Fix Thumbnail Variable
 def logToSQL(video_id, video_title, videoLink, thumbnail):
     #Instantiate MySQL Cursor
     mycursor = mydb.cursor()
@@ -200,10 +204,25 @@ def logToSQL(video_id, video_title, videoLink, thumbnail):
 
     if respond == None:
         return True
-    
+
+def cleanup():
+    try:
+        shutil.rmtree('config')
+    except OSError as e:
+        logging.error("#######################################")
+        logging.error("Error: %s : %s" % ('config', e.strerror))
+        logging.error('#######################################') 
+        for filename in os.listdir('./'):
+            if filename.endswith(".jpg"):
+                os.remove(f"{filename}")
+            else:
+                pass
+        logging.info("Files Cleaned")
         
 
 ######################################## MAIN SCRIPT BODY ####################################################
+
+cleanup()
 
 ### Call VideoTitle Function ###
 post = getLatestVideo(authkeys.youTube_key,authkeys.channelID)
@@ -230,19 +249,19 @@ if posting == True:
     logging.info("Cleaning up Files.....")
     logging.info('')
     os.remove(f"{post[1]}.jpg.REMOVE_ME")
-    try:
-        shutil.rmtree('config')
-    except OSError as e:
-        logging.error("#######################################")
-        logging.error("Error: %s : %s" % ('config', e.strerror))
-        logging.error('#######################################')
+    cleanup()
     logging.info('-----------------------------------       END RUN     -----------------------------------')
+    logging.info('')
+    logging.info('')
     logging.info('')
 
 else:
     logging.error(f"{post[1]} Already posted to Socials. Skipping.")
     logging.info("Cleaning Up Files.....")
     os.remove(f"{post[1]}.jpg")
+    print()
+    cleanup()
     logging.info('-----------------------------------       END RUN     -----------------------------------')
     logging.info('')
-    
+    logging.info('')
+    logging.info('')
